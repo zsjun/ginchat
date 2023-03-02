@@ -1,7 +1,8 @@
 package main
 
-import "fmt"
+import "ginchat/router"
 
 func main() {
-	fmt.Println("hello world")
+  r := router.Router()
+  r.Run(":8081") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
