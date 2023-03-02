@@ -14,6 +14,7 @@ func TestCreateTableName(t *testing.T) {
 	if err != nil {
 			t.Fatalf("failed to connect database: %v", err)
 	}
+	// defer db.Close()
 	err = db.AutoMigrate(&models.UserBasic{})
 	if err != nil {	
 			t.Fatalf("failed to migrate database: %v", err)

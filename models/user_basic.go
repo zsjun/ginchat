@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"gorm.io/gorm"
 )
 
@@ -13,9 +15,9 @@ type UserBasic struct {
 	Identity      string `json:"identity"`
 	ClientIP      string `json:"client_ip"`
 	ClientPort    string `json:"client_port"`
-	LoginTime     uint64 `json:"login_time"`
-	HeartbeatTime uint64 `json:"heartbeat_time"`
-	LoginOutTime  uint64 `json:"login_out_time"`
+	LoginTime     time.Time `gorm:"column:login_time;default:2023-03-02 15:08:25.427" json:"login_time"`
+	HeartbeatTime time.Time `gorm:"column:heart_beat_time; default:2023-03-02 15:08:25.427" json:"heart_beat_time"`
+	LoginOutTime  time.Time `gorm:"column:login_out_time; default:2023-03-02 15:08:25.427" json:"login_out_time"`
 	IsLogout      bool   `json:"is_logout"`
 	DeviceInfo    string `json:"device_info"`
 
