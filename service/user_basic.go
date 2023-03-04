@@ -5,6 +5,8 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/asaskevich/govalidator"
 )
 
 // GetUserList
@@ -12,7 +14,7 @@ import (
 // @Success 200 {json} json{"code","message"}
 // @Router /user/getUserList [get]
 func GetUserList(c *gin.Context) {
-	userList := make([]*models.UserBasic, 10)
+	// userList := make([]*models.UserBasic, 10)
 	userList, err := models.UserBasic{}.List()
 	if err != nil {
 		c.JSON(500, gin.H{
@@ -23,6 +25,7 @@ func GetUserList(c *gin.Context) {
 		"message": userList,
 	})
 }
+
 
 // CreateUser
 // @Tags 创建用户
@@ -39,6 +42,22 @@ func CreateUser(c *gin.Context) {
 		})
 		return
 	}
+	_, err = govalidator.ValidateStruct(user)
+	name := c.Query("name")
+	data := models.FindUserByName(name)
+	if data != nil {
+		c.JSON(200, gin.H{
+			"message": "用户名已经注册",
+		})
+		return
+	}
+	if err != nil {
+		c.JSON(500, gin.H{
+			"message": "用户名和密码不符合标准",
+		})
+		return
+	}
+
 	err = models.UserBasic{}.Create(user)
 	if err != nil {
 		c.JSON(500, gin.H{

@@ -11,8 +11,8 @@ type UserBasic struct {
 	gorm.Model
 	Name          string `json:"name"`
 	PassWord      string `json:"pass_word"`
-	Phone         string `json:"phone"`
-	Email         string `json:"email"`
+	Phone         string `valid:"matches(^1[3-9]{1}\\d{9})" json:"phone"`
+	Email         string `valid:"email" json:"email"` 
 	Identity      string `json:"identity"`
 	ClientIP      string `json:"client_ip"`
 	ClientPort    string `json:"client_port"`
@@ -35,6 +35,19 @@ func (u UserBasic) List() ([]*UserBasic, error) {
 		return nil, err
 	}
 	return userList, nil
+}
+func FindUserByName(name string) error {
+	user := UserBasic{}
+	return common.DB.Model(UserBasic{}).Where("name = ?", name).First(&user).Error
+}
+func FindUserByPhone(phone string) error {
+	user := UserBasic{}
+	return common.DB.Model(UserBasic{}).Where("phone = ?", phone).First(&user).Error
+}
+
+func FindUserByEmail(email string) error {
+	user := UserBasic{}
+	return common.DB.Model(UserBasic{}).Where("email = ?", email).First(&user).Error
 }
 func (u UserBasic) Create(user UserBasic) error {
 	return common.DB.Model(u).Create(&user).Error
