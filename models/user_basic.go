@@ -1,6 +1,7 @@
 package models
 
 import (
+	"ginchat/common"
 	"time"
 
 	"gorm.io/gorm"
@@ -26,4 +27,25 @@ type UserBasic struct {
 func (table *UserBasic) CreateTableName() string {
 	return "user_basic"
 }
+
+func (u UserBasic) List() ([]*UserBasic, error) {
+	userList := make([]*UserBasic, 10)
+	err := common.DB.Model(UserBasic{}).Where("id <> 0").Find(&userList).Error
+	if err != nil {
+		return nil, err
+	}
+	return userList, nil
+}
+func (u UserBasic) Create(user UserBasic) error {
+	return common.DB.Model(u).Create(&user).Error
+}
+func (u *UserBasic) Delete() error {
+	return common.DB.Model(u).Delete(u).Error
+}
+func (u UserBasic) Update(user UserBasic) error {
+	return common.DB.Model(u).Updates(&user).Error
+}
+
+
+
 

@@ -2,8 +2,9 @@ package service
 
 import (
 	"ginchat/models"
-	"github.com/gin-gonic/gin"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 // GetUserList
@@ -106,5 +107,5 @@ func DeleteUser(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "删除成功",
 	})
-	return
+	return 
 }
