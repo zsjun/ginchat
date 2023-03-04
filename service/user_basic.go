@@ -27,8 +27,8 @@ func GetUserList(c *gin.Context) {
 // CreateUser
 // @Tags 创建用户
 // @Success 200 {json} json{"code","message"}
-// @param name body  true "用户名"
-// @param pass_word body  true "密码"
+// @Param name body  string true "用户名"
+// @Param pass_word body string true "密码"
 // @Router /user/create [post]
 func CreateUser(c *gin.Context) {
 	user := models.UserBasic{}
@@ -55,9 +55,9 @@ func CreateUser(c *gin.Context) {
 // UpdateUser
 // @Tags 更新用户
 // @Success 200 {json} json{"code","message"}
-// @param id body int true "id"
-// @param name body string true "用户名"
-// @param pass_word body string true "密码"
+// @Param id body int true "id"
+// @Param name body string true "用户名"
+// @Param pass_word body string true "密码"
 // @Router /user/Update [put]
 func UpdateUser(c *gin.Context) {
 	user := models.UserBasic{}
@@ -83,7 +83,7 @@ func UpdateUser(c *gin.Context) {
 
 // DeleteUser
 // @Tags 删除用户
-// @param id path  true "用户信息"
+// @Param id path  int true "用户信息"
 // @Success 200 {json} json{"code","message"}
 // @Router /user/delete/{id} [delete]
 func DeleteUser(c *gin.Context) {

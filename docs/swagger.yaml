@@ -1,6 +1,3 @@
-definitions:
-  models.UserBasic:
-    type: object
 info:
   contact: {}
 paths:
@@ -13,15 +10,49 @@ paths:
             type: string
       tags:
         - 首页
+  /user/Update:
+    put:
+      parameters:
+        - description: id
+          in: body
+          name: id
+          required: true
+          schema:
+            type: integer
+        - description: 用户名
+          in: body
+          name: name
+          required: true
+          schema:
+            type: string
+        - description: 密码
+          in: body
+          name: pass_word
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: code","message"}
+          schema:
+            type: json
+      tags:
+        - 更新用户
   /user/create:
     post:
       parameters:
-        - description: 用户信息
+        - description: 用户名
           in: body
-          name: user
+          name: name
           required: true
           schema:
-            $ref: "#/definitions/models.UserBasic"
+            type: string
+        - description: 密码
+          in: body
+          name: pass_word
+          required: true
+          schema:
+            type: string
       responses:
         "200":
           description: code","message"}
@@ -29,15 +60,14 @@ paths:
             type: json
       tags:
         - 创建用户
-  /user/delete:
+  /user/delete/{id}:
     delete:
       parameters:
         - description: 用户信息
-          in: body
-          name: user
+          in: path
+          name: id
           required: true
-          schema:
-            $ref: "#/definitions/models.UserBasic"
+          type: integer
       responses:
         "200":
           description: code","message"}
