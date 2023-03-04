@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"ginchat/common"
 	"time"
 
@@ -37,6 +38,7 @@ func (u UserBasic) List() ([]*UserBasic, error) {
 	return userList, nil
 }
 func (u UserBasic) Create(user UserBasic) error {
+	fmt.Println(common.DB)
 	return common.DB.Model(u).Create(&user).Error
 }
 func (u *UserBasic) Delete() error {

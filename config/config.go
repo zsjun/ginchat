@@ -12,6 +12,10 @@ type Mysql struct {
 	PassWord string `json:"password"`
 }
 
+func ReadSection(name string) map[string]string {
+	return common.VP.GetStringMapString(name)
+}
+
 func GetMysqlConfig() (*Mysql, error) {
 	mapConfig := ReadSection("mysql")
 	mysqlConfig := Mysql{}
@@ -22,6 +26,4 @@ func GetMysqlConfig() (*Mysql, error) {
 	mysqlConfig.PassWord = mapConfig["password"]
 	return &mysqlConfig, nil
 }
-func ReadSection(name string) map[string]string {
-	return common.VP.GetStringMapString(name)
-}
+

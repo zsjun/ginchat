@@ -5,13 +5,14 @@ import (
 	"ginchat/common"
 	"ginchat/config"
 	"ginchat/models"
+	"log"
+	"os"
+	"time"
+
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
-	"log"
-	"os"
-	"time"
 )
 
 func InitConfig() error {
@@ -19,7 +20,6 @@ func InitConfig() error {
 	common.VP.SetConfigName("app")
 	common.VP.AddConfigPath("config")
 	return common.VP.ReadInConfig()
-
 }
 
 func InitMysql() {
