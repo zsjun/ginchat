@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/gob"
 	"fmt"
 	"ginchat/router"
 	"ginchat/utils"
@@ -60,7 +59,7 @@ var db = &User{Id: 10001, Email: "abc@gmail.cn", Username: "Alice", Password: "1
 
 func main() {
   // 注册User结构体
-  gob.Register(User{}) 
+  // gob.Register(User{}) 
   utils.InitConfig()
   utils.InitMysql()
   r := router.Router()
@@ -69,7 +68,6 @@ func main() {
   store := cookie.NewStore([]byte("secret")) 
   // mysession是返回給前端的sessionId名
   r.Use(sessions.Sessions("mysession", store))
-
   setupRouter(r)
 
   
