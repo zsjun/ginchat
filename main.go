@@ -7,17 +7,81 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/gin-contrib/sessions"
+	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
 )
+type User struct {
+	Id       int    `json:"id"`
+	Email    string `json:"email"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
+func getCurrentUser(c *gin.Context) (userInfo User) {
+	session := sessions.Default(c)
+	userInfo = session.Get("currentUser").(User) // 类型转换一下
+	return
+}
+
+func setCurrentUser(c *gin.Context, userInfo User) {
+	session := sessions.Default(c)
+	session.Set("currentUser", userInfo)
+        // 一定要Save否则不生效，若未使用gob注册User结构体，调用Save时会返回一个Error
+	session.Save() 
+}
+
+func setupRouter(r *gin.Engine) {
+	r.POST("/login", func(c *gin.Context) {
+		var loginVo User
+		if c.ShouldBindJSON(&loginVo) != nil {
+			c.String(http.StatusOK, "参数错误")
+			return
+		}
+		if loginVo.Email == db.Email && loginVo.Password == db.Password {
+			setCurrentUser(c, *db) // 邮箱和密码正确则将当前用户信息写入session中
+			c.String(http.StatusOK, "登录成功")
+		} else {
+			c.String(http.StatusOK, "登录失败")
+		}
+	})
+
+	r.GET("/sayHello", func(c *gin.Context) {
+		userInfo := getCurrentUser(c)
+		c.String(http.StatusOK, "Hello "+userInfo.Name)
+	})
+}
+
+var db = &User{Id: 10001, Email: "abc@gmail.cn", Username: "Alice", Password: "123456"} // 不操作数据库，把所有用户信息写死在代码里
+
+
 
 func main() {
+  
   utils.InitConfig()
   utils.InitMysql()
   r := router.Router()
   fmt.Println("hello, world1")
 
   r.GET("/login", Login)
-	
+
+  // 设置生成sessionId的密钥
+  store := cookie.NewStore([]byte("secret")) 
+  // mysession是返回給前端的sessionId名
+  r.Use(sessions.Sessions("mysession", store))
+
+  r.GET("/hello", func(c *gin.Context) {
+    session := sessions.Default(c)
+
+    if session.Get("hello") != "world" {
+      session.Set("hello", "world")
+      session.Save()
+    }
+
+    c.JSON(200, gin.H{"hello": session.Get("hello")})
+  })
+
+
   // 需要登陆保护的
   auth := r.Group("/api")
 	auth.Use(AuthRequired())
