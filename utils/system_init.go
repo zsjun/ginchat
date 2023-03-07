@@ -43,3 +43,8 @@ func InitMysql() {
 	}
 	common.DB.AutoMigrate(&models.UserBasic{})
 }
+
+// func Init() {
+// 	// common.userkey = "user";
+// 	fmt.Println(common)
+// }

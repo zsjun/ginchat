@@ -1,6 +1,8 @@
 package service
 
-import "github.com/gin-gonic/gin"
+import (
+	"github.com/gin-gonic/gin"
+)
 
 // GETIndex
 // @Tags 首页
@@ -11,3 +13,4 @@ func GetIndex(c *gin.Context) {
 		"message": "welcom !!",
 	})
 }
+

@@ -5,7 +5,13 @@ import (
 	"gorm.io/gorm"
 )
 
+
 var (
 	VP *viper.Viper
 	DB *gorm.DB
+	secret []byte
 )
+// const (
+// 	userkey string = "user"
+// )
+

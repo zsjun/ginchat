@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+  utils.Init()
   utils.InitConfig()
   utils.InitMysql()
   r := router.Router()
