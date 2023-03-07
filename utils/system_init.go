@@ -51,7 +51,7 @@ func InitRedis() {
 		panic("failed to read mysqlConfig")
 	}
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     myRedisConfig.Ip + myRedisConfig.Port,
+		Addr:     myRedisConfig.Ip + ":" + myRedisConfig.Port,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
@@ -59,6 +59,7 @@ func InitRedis() {
 	ctx := context.Background()
 	pong, err := rdb.Ping(ctx).Result()
 	if err != nil {
+		fmt.Println(1112233)
 		panic(err)
 	}
 	fmt.Println("222", pong)

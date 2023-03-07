@@ -33,7 +33,7 @@ type Redis struct {
 }
 
 func GetRedisConfig() (*Mysql, error) {
-	mapConfig := ReadSection("mysql")
+	mapConfig := ReadSection("redis")
 	myRedisConfig := Mysql{}
 	myRedisConfig.Ip = mapConfig["ip"]
 	myRedisConfig.Port = mapConfig["port"]

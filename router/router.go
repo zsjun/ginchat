@@ -30,7 +30,7 @@ func Router() *gin.Engine {
 	r := gin.Default()
 	// Set up the session store
 	// Setup the cookie store for session management
-	r.Use(sessions.Sessions("mysession", cookie.NewStore(common.secret)))
+	r.Use(sessions.Sessions("mysession", cookie.NewStore(common.Secret)))
 
 	docs.SwaggerInfo.BasePath = ""
 
