@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"ginchat/common"
 	"time"
 
@@ -9,7 +10,7 @@ import (
 
 type UserBasic struct {
 	gorm.Model
-	Name          string `json:"name"`
+	Name          string `gorm:"unique" json:"name"`
 	PassWord      string `json:"pass_word"`
 	Phone         string `valid:"matches(^1[3-9]{1}\\d{9})" json:"phone"`
 	Email         string `valid:"email" json:"email"` 
@@ -22,6 +23,10 @@ type UserBasic struct {
 	IsLogout      bool   `json:"is_logout"`
 	DeviceInfo    string `json:"device_info"`
 
+}
+type User struct {
+	Name          string `gorm:"unique" json:"name"`
+	PassWord      string `json:"pass_word"`
 }
 
 func (table *UserBasic) CreateTableName() string {
@@ -36,9 +41,10 @@ func (u UserBasic) List() ([]*UserBasic, error) {
 	}
 	return userList, nil
 }
-func FindUserByName(name string) error {
+func FindUserByName(name string) (UserBasic, error) {
 	user := UserBasic{}
-	return common.DB.Model(UserBasic{}).Where("name = ?", name).First(&user).Error
+	fmt.Println(12, common.DB.Model(UserBasic{}).Where("name = ?", name).First(&user))
+	return user, common.DB.Model(UserBasic{}).Where("name = ?", name).First(&user).Error
 }
 func FindUserByPhone(phone string) error {
 	user := UserBasic{}

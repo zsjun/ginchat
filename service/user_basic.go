@@ -43,8 +43,8 @@ func CreateUser(c *gin.Context) {
 	}
 	_, err = govalidator.ValidateStruct(user)
 	name := c.Query("name")
-	data := models.FindUserByName(name)
-	if data != nil {
+	_, err = models.FindUserByName(name)
+	if err != nil {
 		c.JSON(200, gin.H{
 			"message": "用户名已经注册",
 		})

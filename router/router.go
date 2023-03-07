@@ -40,6 +40,7 @@ func Router() *gin.Engine {
 	r.POST("/user/create", service.CreateUser)
 	r.PUT("/user/update", service.UpdateUser)
 	r.DELETE("/user/delete", service.DeleteUser)
+	r.POST("/login", service.Login)
 
 	// Private group, require authentication to access
 	// private := r.Group("/private")
