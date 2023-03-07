@@ -81,6 +81,7 @@ func main() {
 		}
 
 		c.JSON(200, gin.H{"hello": session.Get("hello")})
+
 	})
 
 	// 需要登陆保护的

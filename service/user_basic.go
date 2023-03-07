@@ -26,7 +26,6 @@ func GetUserList(c *gin.Context) {
 	})
 }
 
-
 // CreateUser
 // @Tags 创建用户
 // @Success 200 {json} json{"code","message"}
@@ -126,5 +125,5 @@ func DeleteUser(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "删除成功",
 	})
-	return 
+	return
 }
