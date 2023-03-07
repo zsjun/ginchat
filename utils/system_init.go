@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"context"
 	"fmt"
 	"ginchat/common"
 	"ginchat/config"
@@ -9,6 +10,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/go-redis/redis/v8"
 	"github.com/spf13/viper"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -42,6 +44,24 @@ func InitMysql() {
 		panic("failed to connect database")
 	}
 	common.DB.AutoMigrate(&models.UserBasic{})
+}
+func InitRedis() {
+	myRedisConfig, err := config.GetRedisConfig()
+	if err != nil {
+		panic("failed to read mysqlConfig")
+	}
+	rdb := redis.NewClient(&redis.Options{
+		Addr:     myRedisConfig.Ip + myRedisConfig.Port,
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
+	fmt.Println(1123)
+	ctx := context.Background()
+	pong, err := rdb.Ping(ctx).Result()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("222", pong)
 }
 
 // func Init() {

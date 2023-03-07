@@ -1,6 +1,7 @@
 package router
 
 import (
+	"ginchat/common"
 	"ginchat/docs"
 	"ginchat/service"
 	"net/http"
@@ -15,7 +16,7 @@ import (
 // AuthRequired is a simple middleware to check the session.
 func AuthRequired(c *gin.Context) {
 	session := sessions.Default(c)
-	user := session.Get(common.userkey)
+	user := session.Get(common.Userkey)
 	if user == nil {
 		// Abort the request with the appropriate error code
 		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "unauthorized"})
@@ -31,7 +32,6 @@ func Router() *gin.Engine {
 	// Setup the cookie store for session management
 	r.Use(sessions.Sessions("mysession", cookie.NewStore(common.secret)))
 
-	
 	docs.SwaggerInfo.BasePath = ""
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
@@ -42,13 +42,12 @@ func Router() *gin.Engine {
 	r.DELETE("/user/delete", service.DeleteUser)
 
 	// Private group, require authentication to access
-	private := r.Group("/private")
-	private.Use(AuthRequired)
-	{
-		private.GET("/me", me)
-		private.GET("/status", status)
-	}
+	// private := r.Group("/private")
+	// private.Use(AuthRequired)
+	// {
+	// 	private.GET("/me", me)
+	// 	private.GET("/status", status)
+	// }
 	return r
 
-	return r
 }

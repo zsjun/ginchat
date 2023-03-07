@@ -27,3 +27,15 @@ func GetMysqlConfig() (*Mysql, error) {
 	return &mysqlConfig, nil
 }
 
+type Redis struct {
+	Addr string `json:"addr"`
+	Port string `json:"port"`
+}
+
+func GetRedisConfig() (*Mysql, error) {
+	mapConfig := ReadSection("mysql")
+	myRedisConfig := Mysql{}
+	myRedisConfig.Ip = mapConfig["ip"]
+	myRedisConfig.Port = mapConfig["port"]
+	return &myRedisConfig, nil
+}

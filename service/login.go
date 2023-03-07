@@ -1,6 +1,7 @@
 package service
 
 import (
+	"ginchat/common"
 	"net/http"
 	"strings"
 
@@ -32,7 +33,7 @@ func Login(c *gin.Context) {
 	}
 
 	// Save the username in the session
-	session.Set(common.userkey, username) // In real world usage you'd set this to the users ID
+	session.Set(common.Userkey, username) // In real world usage you'd set this to the users ID
 	if err := session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
@@ -42,12 +43,12 @@ func Login(c *gin.Context) {
 
 func logout(c *gin.Context) {
 	session := sessions.Default(c)
-	user := session.Get(common.userkey)
+	user := session.Get(common.Userkey)
 	if user == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session token"})
 		return
 	}
-	session.Delete(common.userkey)
+	session.Delete(common.Userkey)
 	if err := session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
@@ -59,7 +60,7 @@ func logout(c *gin.Context) {
 // session.
 func me(c *gin.Context) {
 	session := sessions.Default(c)
-	user := session.Get(common.userkey)
+	user := session.Get(common.Userkey)
 	c.JSON(http.StatusOK, gin.H{"user": user})
 }
 
