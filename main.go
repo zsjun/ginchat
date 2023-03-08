@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"ginchat/router"
 	"ginchat/utils"
 
@@ -20,7 +19,7 @@ func main() {
 	// utils.InitMysql()
 	utils.InitRedis()
 	r := router.Router()
-	fmt.Println("hello, 12289901")
+
 	// 设置生成sessionId的密钥
 	store := cookie.NewStore([]byte("secret"))
 	// mysession是返回給前端的sessionId名

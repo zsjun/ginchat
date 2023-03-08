@@ -55,14 +55,12 @@ func InitRedis() {
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-	fmt.Println(1123)
 	ctx := context.Background()
-	pong, err := rdb.Ping(ctx).Result()
+	_, err = rdb.Ping(ctx).Result()
 	if err != nil {
 		fmt.Println(1112233)
 		panic(err)
 	}
-	fmt.Println("222", pong)
 }
 
 // func Init() {

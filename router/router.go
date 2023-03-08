@@ -27,7 +27,19 @@ func AuthRequired(c *gin.Context) {
 }
 
 func Router() *gin.Engine {
-	r := gin.Default()
+	// default
+	// r := gin.Default()
+	// Creates a router without any middleware by default
+	// use middware
+	r := gin.New()
+
+	// Global middleware
+	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
+	// By default gin.DefaultWriter = os.Stdout
+	r.Use(gin.Logger())
+
+	// Recovery middleware recovers from any panics and writes a 500 if there was one.
+	r.Use(gin.Recovery())
 	// Set up the session store
 	// Setup the cookie store for session management
 	r.Use(sessions.Sessions("mysession", cookie.NewStore(common.Secret)))
@@ -36,16 +48,22 @@ func Router() *gin.Engine {
 
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
 	r.GET("/index", service.GetIndex)
-	r.GET("/user/getUserList", service.GetUserList)
-	r.POST("/user/create", service.CreateUser)
-	r.PUT("/user/update", service.UpdateUser)
-	r.DELETE("/user/delete", service.DeleteUser)
+	// Simple group: v1
+	v1 := r.Group("/user")
+	{
+		v1.GET("/getUserList", service.GetUserList)
+		v1.POST("/create", service.CreateUser)
+		v1.PUT("/update", service.UpdateUser)
+		v1.DELETE("/delete", service.DeleteUser)
+	}
+
 	r.POST("/login", service.Login)
 	r.GET("/ping", service.Ping)
 	r.GET("/user/:name", service.GetRouterName)
 	// Set a lower memory limit for multipart forms (default is 32 MiB)
 	r.MaxMultipartMemory = 50 << 20 // 50 MiB
 	r.POST("/upload", service.Upload)
+	r.POST("/testJson", service.TestPostMethod)
 
 	// However, this one will match /user/john/ and also /user/john/send
 	// If no other routers match /user/john, it will redirect to /user/john/

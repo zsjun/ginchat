@@ -10,23 +10,22 @@ import (
 
 type UserBasic struct {
 	gorm.Model
-	Name          string `gorm:"unique" json:"name"`
-	PassWord      string `json:"pass_word"`
-	Phone         string `valid:"matches(^1[3-9]{1}\\d{9})" json:"phone"`
-	Email         string `valid:"email" json:"email"` 
-	Identity      string `json:"identity"`
-	ClientIP      string `json:"client_ip"`
-	ClientPort    string `json:"client_port"`
+	Name          string    `gorm:"unique" json:"name"`
+	PassWord      string    `json:"pass_word"`
+	Phone         string    `valid:"matches(^1[3-9]{1}\\d{9})" json:"phone"`
+	Email         string    `valid:"email" json:"email"`
+	Identity      string    `json:"identity"`
+	ClientIP      string    `json:"client_ip"`
+	ClientPort    string    `json:"client_port"`
 	LoginTime     time.Time `gorm:"column:login_time;default:2023-03-02 15:08:25.427" json:"login_time"`
 	HeartbeatTime time.Time `gorm:"column:heart_beat_time; default:2023-03-02 15:08:25.427" json:"heart_beat_time"`
 	LoginOutTime  time.Time `gorm:"column:login_out_time; default:2023-03-02 15:08:25.427" json:"login_out_time"`
-	IsLogout      bool   `json:"is_logout"`
-	DeviceInfo    string `json:"device_info"`
-
+	IsLogout      bool      `json:"is_logout"`
+	DeviceInfo    string    `json:"device_info"`
 }
 type User struct {
-	Name          string `gorm:"unique" json:"name"`
-	PassWord      string `json:"pass_word"`
+	Name     string `gorm:"unique" json:"name"`
+	PassWord string `json:"pass_word"`
 }
 
 func (table *UserBasic) CreateTableName() string {
@@ -64,7 +63,3 @@ func (u *UserBasic) Delete() error {
 func (u UserBasic) Update(user UserBasic) error {
 	return common.DB.Model(u).Updates(&user).Error
 }
-
-
-
-
