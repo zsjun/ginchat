@@ -41,14 +41,39 @@ func Router() *gin.Engine {
 	r.PUT("/user/update", service.UpdateUser)
 	r.DELETE("/user/delete", service.DeleteUser)
 	r.POST("/login", service.Login)
+	r.GET("/ping", service.Ping)
+	r.GET("/user/:name", service.GetRouterName)
 
-	// Private group, require authentication to access
-	// private := r.Group("/private")
-	// private.Use(AuthRequired)
-	// {
-	// 	private.GET("/me", me)
-	// 	private.GET("/status", status)
-	// }
+	// However, this one will match /user/john/ and also /user/john/send
+	// If no other routers match /user/john, it will redirect to /user/john/
+	r.GET("/user/:name/*action", func(c *gin.Context) {
+		name := c.Param("name")
+		action := c.Param("action")
+		message := name + " is " + action
+		c.String(http.StatusOK, message)
+	})
+
+	// Query string parameters are parsed using the existing underlying request object.
+	// The request responds to an url matching:  /welcome?firstname=Jane&lastname=Doe
+	r.GET("/welcome", func(c *gin.Context) {
+		firstname := c.DefaultQuery("firstname", "Guest")
+		lastname := c.Query("lastname") // shortcut for c.Request.URL.Query().Get("lastname")
+
+		c.String(http.StatusOK, "Hello %s %s", firstname, lastname)
+	})
+
+	// content-type:application/x-www-form-urlencoded
+	r.POST("/form_post", func(c *gin.Context) {
+		message := c.PostForm("message")
+		nick := c.DefaultPostForm("nick", "anonymous")
+
+		c.JSON(http.StatusOK, gin.H{
+			"status":  "posted",
+			"message": message,
+			"nick":    nick,
+		})
+	})
+
 	return r
 
 }

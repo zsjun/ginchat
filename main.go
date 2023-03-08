@@ -25,12 +25,7 @@ func main() {
 	store := cookie.NewStore([]byte("secret"))
 	// mysession是返回給前端的sessionId名
 	r.Use(sessions.Sessions("mysession", store))
-	// setupRouter(r)
-  // r.GET("/sayHello", func(c *gin.Context) {
-	// 	userInfo := getCurrentUser(c)
-	// 	c.String(http.StatusOK, "Hello "+userInfo.Username)
-	// })
+	// This handler will match /user/john but will not match /user/ or /user
 
 	r.Run(":3000") // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
-
