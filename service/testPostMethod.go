@@ -23,7 +23,6 @@ func TestPostMethod(c *gin.Context) {
 		return
 	}
 	// Do something with the user data, e.g. save it to a database
-	fmt.Println(22, user.PassWord)
 	c.JSON(http.StatusOK, gin.H{
 		"message": fmt.Sprintf("User %s : %s", user.Name, user.PassWord),
 	})

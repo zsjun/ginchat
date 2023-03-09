@@ -1,7 +1,6 @@
 package models
 
 import (
-	"fmt"
 	"ginchat/common"
 	"time"
 
@@ -40,10 +39,15 @@ func (u UserBasic) List() ([]*UserBasic, error) {
 	}
 	return userList, nil
 }
-func FindUserByName(name string) (UserBasic, error) {
+func FindUserByName(name string) (*UserBasic, error) {
 	user := UserBasic{}
-	fmt.Println(12, common.DB.Model(UserBasic{}).Where("name = ?", name).First(&user))
-	return user, common.DB.Model(UserBasic{}).Where("name = ?", name).First(&user).Error
+
+	err := common.DB.Model(UserBasic{}).Where("name = ?", name).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	// fmt.Println(12, common.DB.Model(UserBasic{}).Where("name = ?", name).First(&user))
+	return &user, err
 }
 func FindUserByPhone(phone string) error {
 	user := UserBasic{}

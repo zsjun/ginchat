@@ -42,6 +42,9 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 	_, err = govalidator.ValidateStruct(user)
+	if err != nil {
+		panic(err)
+	}
 	name := c.Query("name")
 	_, err = models.FindUserByName(name)
 	if err != nil {

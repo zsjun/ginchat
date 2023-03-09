@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"ginchat/common"
 	"ginchat/models"
 	"net/http"
@@ -9,6 +8,7 @@ import (
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
+
 func getCurrentUser(c *gin.Context) (userInfo models.UserBasic) {
 	session := sessions.Default(c)
 	// 类型转换一下
@@ -21,6 +21,7 @@ func setCurrentUser(c *gin.Context, userInfo models.UserBasic) {
 	// 一定要Save否则不生效，若未使用gob注册User结构体，调用Save时会返回一个Error
 	session.Save()
 }
+
 // Login
 // @Tags 获取用户列表
 // @Param name body  string true "用户名"
@@ -29,7 +30,6 @@ func setCurrentUser(c *gin.Context, userInfo models.UserBasic) {
 // @Router /user/Login [post]
 func Login(c *gin.Context) {
 	session := sessions.Default(c)
-
 	loginUserInfo := models.User{}
 	if c.ShouldBindJSON(&loginUserInfo) != nil {
 		c.String(http.StatusOK, "参数错误")
@@ -40,10 +40,8 @@ func Login(c *gin.Context) {
 	// 	fmt.Println(12, err)
 	// 	panic(err)
 	// }
-	fmt.Println(1122, loginUserInfo.Name, loginUserInfo.PassWord)
-	
-	
-	db,err := models.FindUserByName(loginUserInfo.Name)
+
+	db, err := models.FindUserByName(loginUserInfo.Name)
 
 	if err != nil {
 		panic(err)
@@ -56,23 +54,6 @@ func Login(c *gin.Context) {
 	} else {
 		c.String(http.StatusOK, "登录失败")
 	}
-	// username := c.PostForm("username")
-	// password := c.PostForm("password")
-
-	// Validate form input
-	// if strings.Trim(username, " ") == "" || strings.Trim(password, " ") == "" {
-	// 	c.JSON(http.StatusBadRequest, gin.H{"error": "Parameters can't be empty"})
-	// 	return
-	// }
-
-	// Check for username and password match, usually from a database
-	// if username != "hello" || password != "itsme" {
-	// 	c.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication failed"})
-	// 	return
-	// }
-
-	// Save the username in the session
-	// session.Set(common.Userkey, username) // In real world usage you'd set this to the users ID
 	if err := session.Save(); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
 		return
