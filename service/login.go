@@ -72,16 +72,3 @@ func LogOut(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"message": "Successfully logged out"})
 }
-
-// me is the handler that will return the user information stored in the
-// session.
-func IsLogin(c *gin.Context) {
-	session := sessions.Default(c)
-	userID := session.Get(common.Userkey)
-	if userID == nil {
-		// If not authenticated, redirect to login
-		c.Redirect(http.StatusSeeOther, "/login")
-		return
-	}
-	c.JSON(http.StatusOK, gin.H{"user": userID, "status": "You are logged in"})
-}

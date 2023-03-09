@@ -6,7 +6,6 @@ import (
 	"ginchat/service"
 	"net/http"
 
-	"github.com/gin-contrib/auth"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -15,12 +14,12 @@ import (
 )
 
 // AuthRequired is a simple middleware to check the session.
-func AuthRequired(c *gin.Context) {
+func authMiddleware(c *gin.Context) {
 	session := sessions.Default(c)
 	userId := session.Get(common.Userkey)
 	if userId == nil {
 		// Abort the request with the appropriate error code
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"error": "you are not logined"})
+		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "you are not logined"})
 		return
 	}
 	// Continue down the chain to handler etc
@@ -45,15 +44,14 @@ func Router() *gin.Engine {
 
 	// Recovery middleware recovers from any panics and writes a 500 if there was one.
 	r.Use(gin.Recovery())
-	authMiddleware := auth.BasicAuth(AuthRequired)
 	// Initialize basic auth middleware
 	// docs Swagger
 	docs.SwaggerInfo.BasePath = ""
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
-	r.GET("/index", service.GetIndex)
 	// Simple group: v1
+	// Set a lower memory limit for multipart forms (default is 32 MiB)
+	r.MaxMultipartMemory = 50 << 20 // 50 MiB
 	r.POST("/login", service.Login)
-
 	v1 := r.Group("/api", authMiddleware)
 	{
 		v1.GET("/getUserList", service.GetUserList)
@@ -61,16 +59,14 @@ func Router() *gin.Engine {
 		v1.PUT("/update", service.UpdateUser)
 		v1.DELETE("/delete", service.DeleteUser)
 		v1.GET("/:name", service.GetRouterName)
-		r.GET("/logout", service.LogOut)
-		// Set a lower memory limit for multipart forms (default is 32 MiB)
-		r.MaxMultipartMemory = 50 << 20 // 50 MiB
-		r.POST("/upload", service.Upload)
-		r.POST("/testJson", service.TestPostMethod)
-		r.GET("/welcome", service.Welcome)
-		r.POST("/form_post", service.FormPost)
-		r.GET("/isLogin", service.IsLogin)
-		r.GET("/ping", service.Ping)
+		v1.POST("/upload", service.Upload)
+		v1.POST("/testJson", service.TestPostMethod)
+		v1.GET("/welcome", service.Welcome)
+		v1.POST("/form_post", service.FormPost)
+		v1.GET("/ping", service.Ping)
+		// v1.GET("/isLogin", service.IsLogin)
 	}
+	r.GET("/logout", service.LogOut)
 
 	return r
 
