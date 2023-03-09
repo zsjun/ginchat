@@ -43,6 +43,7 @@ func FindUserByName(name string) (*UserBasic, error) {
 	user := UserBasic{}
 
 	err := common.DB.Model(UserBasic{}).Where("name = ?", name).First(&user).Error
+
 	if err != nil {
 		return nil, err
 	}

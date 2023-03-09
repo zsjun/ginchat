@@ -58,7 +58,6 @@ func InitRedis() {
 	ctx := context.Background()
 	_, err = rdb.Ping(ctx).Result()
 	if err != nil {
-		fmt.Println(1112233)
 		panic(err)
 	}
 }
