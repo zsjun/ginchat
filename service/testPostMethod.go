@@ -9,7 +9,7 @@ import (
 )
 
 func TestPostMethod(c *gin.Context) {
-	var user models.User
+	var user models.UserBasic
 	// send api field should match json
 	// for example
 	// use
@@ -24,7 +24,7 @@ func TestPostMethod(c *gin.Context) {
 	}
 	// Do something with the user data, e.g. save it to a database
 	c.JSON(http.StatusOK, gin.H{
-		"message": fmt.Sprintf("User %s : %s", user.Name, user.PassWord),
+		"message": fmt.Sprintf("User %s : %s", user.UserName, user.PassWord),
 	})
 
 }

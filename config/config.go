@@ -1,7 +1,7 @@
 package config
 
 import (
-	"ginchat/common"
+	"ginchat/global"
 )
 
 type Mysql struct {
@@ -13,7 +13,7 @@ type Mysql struct {
 }
 
 func ReadSection(name string) map[string]string {
-	return common.VP.GetStringMapString(name)
+	return global.VP.GetStringMapString(name)
 }
 
 func GetMysqlConfig() (*Mysql, error) {

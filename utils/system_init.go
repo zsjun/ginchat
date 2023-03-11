@@ -3,8 +3,8 @@ package utils
 import (
 	"context"
 	"fmt"
-	"ginchat/common"
 	"ginchat/config"
+	"ginchat/global"
 	"ginchat/models"
 	"log"
 	"os"
@@ -18,10 +18,10 @@ import (
 )
 
 func InitConfig() error {
-	common.VP = viper.GetViper()
-	common.VP.SetConfigName("app")
-	common.VP.AddConfigPath("config")
-	return common.VP.ReadInConfig()
+	global.VP = viper.GetViper()
+	global.VP.SetConfigName("app")
+	global.VP.AddConfigPath("config")
+	return global.VP.ReadInConfig()
 }
 
 func InitMysql() {
@@ -36,33 +36,52 @@ func InitMysql() {
 		panic("failed to read mysqlConfig")
 	}
 
-	common.DB, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true",
+	global.DB, err = gorm.Open(mysql.Open(fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8&parseTime=true",
 		mysqlConfig.User, mysqlConfig.PassWord,
 		mysqlConfig.Ip, mysqlConfig.Port, mysqlConfig.Database)),
 		&gorm.Config{Logger: newLogger})
 	if err != nil {
 		panic("failed to connect database")
 	}
-	common.DB.AutoMigrate(&models.UserBasic{})
+	global.DB.AutoMigrate(&models.UserBasic{})
 }
 func InitRedis() {
 	myRedisConfig, err := config.GetRedisConfig()
 	if err != nil {
 		panic("failed to read mysqlConfig")
 	}
-	rdb := redis.NewClient(&redis.Options{
+	global.Red = redis.NewClient(&redis.Options{
 		Addr:     myRedisConfig.Ip + ":" + myRedisConfig.Port,
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
 	ctx := context.Background()
-	_, err = rdb.Ping(ctx).Result()
+	_, err = global.Red.Ping(ctx).Result()
 	if err != nil {
+
 		panic(err)
 	}
 }
 
-// func Init() {
-// 	// common.userkey = "user";
-// 	fmt.Println(common)
-// }
+const (
+	PublishKey = "websocket"
+)
+
+func Publish(ctx context.Context, channel string, msg string) error {
+	err := global.Red.Publish(ctx, channel, msg)
+	if err != nil {
+		fmt.Println("Redis Publish fail")
+		panic(err)
+	}
+	return nil
+}
+
+func Subscribel(ctx context.Context, channel string) (string, error) {
+	sub := global.Red.PSubscribe(ctx, channel)
+	msg, err := sub.ReceiveMessage(ctx)
+	if err != nil {
+		fmt.Println("Redis Subscribel fail")
+		panic(err)
+	}
+	return msg.Payload, err
+}

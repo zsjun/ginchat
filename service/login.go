@@ -1,7 +1,7 @@
 package service
 
 import (
-	"ginchat/common"
+	"ginchat/global"
 	"ginchat/models"
 	"net/http"
 
@@ -9,18 +9,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func getCurrentUser(c *gin.Context) (userInfo models.UserBasic) {
-	session := sessions.Default(c)
-	// 类型转换一下
-	userInfo = session.Get("currentUser").(models.UserBasic)
-	return
-}
-func setCurrentUser(c *gin.Context, userInfo models.UserBasic) {
-	session := sessions.Default(c)
-	session.Set("currentUser", userInfo)
-	// 一定要Save否则不生效，若未使用gob注册User结构体，调用Save时会返回一个Error
-	session.Save()
-}
+// func getCurrentUser(c *gin.Context) (userInfo models.UserBasic) {
+// 	session := sessions.Default(c)
+// 	// 类型转换一下
+// 	userInfo = session.Get("currentUser").(models.UserBasic)
+// 	return
+// }
+// func setCurrentUser(c *gin.Context, userInfo models.UserBasic) {
+// 	session := sessions.Default(c)
+// 	session.Set("currentUser", userInfo)
+// 	// 一定要Save否则不生效，若未使用gob注册User结构体，调用Save时会返回一个Error
+// 	session.Save()
+// }
 
 // Login
 // @Tags 获取用户列表
@@ -43,7 +43,7 @@ func Login(c *gin.Context) {
 		// setCurrentUser(c, *db)
 		// c.String(http.StatusOK, "登录成功")
 		session := sessions.Default(c)
-		session.Set(common.Userkey, db.ID)
+		session.Set(global.Userkey, db.ID)
 		err := session.Save()
 		if err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
@@ -59,12 +59,12 @@ func Login(c *gin.Context) {
 
 func LogOut(c *gin.Context) {
 	session := sessions.Default(c)
-	userID := session.Get(common.Userkey)
+	userID := session.Get(global.Userkey)
 	if userID == nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid session token"})
 		return
 	}
-	session.Delete(common.Userkey)
+	session.Delete(global.Userkey)
 	err := session.Save()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to save session"})
