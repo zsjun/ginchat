@@ -9,6 +9,7 @@ import (
 	"ginchat/ws"
 	"net/http"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-contrib/sessions/cookie"
 	"github.com/gin-gonic/gin"
@@ -18,17 +19,18 @@ import (
 )
 
 // AuthRequired is a simple middleware to check the session.
-func authMiddleware(c *gin.Context) {
-	session := sessions.Default(c)
-	userId := session.Get(global.Userkey)
-	if userId == nil {
-		// Abort the request with the appropriate error code
-		c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "you are not logined"})
-		return
-	}
-	// Continue down the chain to handler etc
-	c.Next()
-}
+//
+//	func authMiddleware(c *gin.Context) {
+//		session := sessions.Default(c)
+//		userId := session.Get(global.Userkey)
+//		if userId == nil {
+//			// Abort the request with the appropriate error code
+//			c.AbortWithStatusJSON(http.StatusUnauthorized, gin.H{"message": "you are not logined"})
+//			return
+//		}
+//		// Continue down the chain to handler etc
+//		c.Next()
+//	}
 func tokenAuthMiddleware(c *gin.Context) {
 	tokenString := c.GetHeader("Authorization")
 	if tokenString == "" {
@@ -72,7 +74,8 @@ func Router() *gin.Engine {
 	store := cookie.NewStore([]byte("secret"))
 	// mysession是返回給前端的sessionId名
 	r.Use(sessions.Sessions("mysession", store))
-
+	// cors origin
+	r.Use(cors.Default())
 	// Global middleware
 	// Logger middleware will write the logs to gin.DefaultWriter even if you set with GIN_MODE=release.
 	// By default gin.DefaultWriter = os.Stdout
